@@ -11,7 +11,7 @@ import SwiftUI
 struct DependentEnumsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DependentEnums()
         }
     }
 }
