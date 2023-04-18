@@ -1,6 +1,6 @@
 # DependentEnums
 
-This is a simple example of two related enums, League and Team, being used in separate pickers.
+This is a simple Swift and SwiftUI example of two related enums, League and Team, being used in separate pickers.
 
 Choosing a League in one picker will help determine which Teams are available to choose from in the second picker.
 
