@@ -95,7 +95,7 @@ func getSubRange<T: CaseIterable & Equatable>(from start: T, to end: T) -> [T] {
     }
 }
 
-func getTeams(for league: League) -> [Team] {
+func getHomeTeams(for league: League) -> [Team] {
     switch league {
         case .LaLiga:
             return getSubRange(from: Team.almeria, to: Team.villarrealCF)
@@ -106,13 +106,25 @@ func getTeams(for league: League) -> [Team] {
     }
 }
 
+func getAwayTeams(for league: League, ignoring homeTeam: Team) -> [Team] {
+    return getHomeTeams(for: league).filter { $0 != homeTeam }
+}
+
 struct DependentEnums: View {
     @State var league: League? {
         didSet {
-            team = nil
+            homeTeam = nil
+            awayTeam = nil
         }
     }
-    @State var team: Team?
+    
+    @State var homeTeam: Team? {
+        didSet {
+            awayTeam = nil
+        }
+    }
+    
+    @State var awayTeam: Team?
     
     var body: some View {
         Form {
@@ -127,14 +139,27 @@ struct DependentEnums: View {
             }
             
             if let league = league {
-                Picker("Home Team", selection: $team) {
+                Picker("Home Team", selection: $homeTeam) {
                     Text ("Pick a team")
                         .tag(nil as Team?)
                     
-                    ForEach(getTeams(for: league), id: \.self) { team in
+                    ForEach(getHomeTeams(for: league), id: \.self) { team in
                         Text(team.rawValue)
                             .tag(team as Team?)
 
+                    }
+                }
+
+                if let homeTeam = homeTeam {
+                    Picker("Away Team", selection: $awayTeam) {
+                        Text ("Pick a team")
+                            .tag(nil as Team?)
+                        
+                        ForEach(getAwayTeams(for: league, ignoring: homeTeam), id: \.self) { team in
+                            Text(team.rawValue)
+                                .tag(team as Team?)
+
+                        }
                     }
                 }
             }
